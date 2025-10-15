@@ -1,20 +1,121 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, FlatList, Text } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { width, height } from "./constants/Dimensions";
+import Card from "./components/Card";
+
+const phones = [
+  {
+    id: "1",
+    name: "iPhone 15",
+    price: 999,
+    description: "Latest Apple flagship.",
+  },
+  {
+    id: "2",
+    name: "Samsung Galaxy S24",
+    price: 899,
+    description: "Premium Android phone.",
+  },
+  {
+    id: "3",
+    name: "Google Pixel 8",
+    price: 799,
+    description: "Smooth Android experience.",
+  },
+  {
+    id: "4",
+    name: "iPhone 15",
+    price: 999,
+    description: "Latest Apple flagship.",
+  },
+  {
+    id: "5",
+    name: "Samsung Galaxy S24",
+    price: 899,
+    description: "Premium Android phone.",
+  },
+  {
+    id: "6",
+    name: "Google Pixel 8",
+    price: 799,
+    description: "Smooth Android experience.",
+  },
+];
+
+const laptops = [
+  {
+    id: "1",
+    name: "MacBook Pro",
+    price: 1999,
+    description: "Powerful laptop for creators.",
+  },
+  {
+    id: "2",
+    name: "Dell XPS 15",
+    price: 1799,
+    description: "Excellent display and performance.",
+  },
+  {
+    id: "3",
+    name: "HP Spectre x360",
+    price: 1599,
+    description: "Stylish and versatile 2-in-1.",
+  },
+  {
+    id: "4",
+    name: "MacBook Pro",
+    price: 1999,
+    description: "Powerful laptop for creators.",
+  },
+  {
+    id: "5",
+    name: "Dell XPS 15",
+    price: 1799,
+    description: "Excellent display and performance.",
+  },
+  {
+    id: "6",
+    name: "HP Spectre x360",
+    price: 1599,
+    description: "Stylish and versatile 2-in-1.",
+  },
+];
+
 export default function App() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        <View style={styles.Square1}>
-          <View style={styles.innerSquare1} />
-          <View style={styles.innerSquare2} />
+        <View style={styles.listWrapper}>
+          <Text style={styles.header}>Phones</Text>
+          <FlatList
+            data={phones}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <Card
+                name={item.name}
+                price={item.price}
+                description={item.description}
+              />
+            )}
+            contentContainerStyle={styles.listContent}
+          />
         </View>
 
-        <View style={styles.Square2}>
-          <View style={styles.centered} />
+        <View style={styles.listWrapper}>
+          <Text style={styles.header}>Laptops</Text>
+          <FlatList
+            data={laptops}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <Card
+                name={item.name}
+                price={item.price}
+                description={item.description}
+              />
+            )}
+            contentContainerStyle={styles.listContent}
+          />
         </View>
-
-        <View style={styles.Square3} />
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -25,33 +126,14 @@ const styles = StyleSheet.create({
     flex: 1,
     width: width,
     height: height,
-    backgroundColor: "#ffffff",
+    paddingHorizontal: 10,
   },
-  Square1: {
-    flex: 0.3,
-    flexDirection: "row",
+  listWrapper: {
+    flex: 0.5,
   },
-  innerSquare1: {
-    flex: 0.2,
-    backgroundColor: "#f54291",
-  },
-  innerSquare2: {
-    flex: 0.8,
-    backgroundColor: "#42d9f5",
-  },
-  Square2: {
-    flex: 0.3,
-    backgroundColor: "#42f554",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  centered: {
-    width: 100,
-    height: 100,
-    backgroundColor: "#f5e642",
-  },
-  Square3: {
-    flex: 0.4,
-    backgroundColor: "#f57e42",
+  header: {
+    fontSize: 20,
+    fontWeight: "600",
+    marginVertical: 10,
   },
 });
