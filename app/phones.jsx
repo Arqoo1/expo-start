@@ -1,7 +1,8 @@
-import { StyleSheet, View, FlatList, Text } from "react-native";
+import { StyleSheet, View, FlatList, Text, Pressable } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
-import { width, height } from "./constants/Dimensions";
-import Card from "./components/Card";
+import { Link } from "expo-router";
+import { width, height } from "../constants/Dimensions";
+import Card from "../components/Card";
 
 const phones = [
   {
@@ -40,48 +41,33 @@ const phones = [
     price: 799,
     description: "Smooth Android experience.",
   },
-];
-
-const laptops = [
   {
-    id: "1",
-    name: "MacBook Pro",
-    price: 1999,
-    description: "Powerful laptop for creators.",
+    id: "7",
+    name: "Google Pixel 8",
+    price: 799,
+    description: "Smooth Android experience.",
   },
   {
-    id: "2",
-    name: "Dell XPS 15",
-    price: 1799,
-    description: "Excellent display and performance.",
+    id: "8",
+    name: "iPhone 15",
+    price: 999,
+    description: "Latest Apple flagship.",
   },
   {
-    id: "3",
-    name: "HP Spectre x360",
-    price: 1599,
-    description: "Stylish and versatile 2-in-1.",
+    id: "9",
+    name: "Samsung Galaxy S24",
+    price: 899,
+    description: "Premium Android phone.",
   },
   {
-    id: "4",
-    name: "MacBook Pro",
-    price: 1999,
-    description: "Powerful laptop for creators.",
-  },
-  {
-    id: "5",
-    name: "Dell XPS 15",
-    price: 1799,
-    description: "Excellent display and performance.",
-  },
-  {
-    id: "6",
-    name: "HP Spectre x360",
-    price: 1599,
-    description: "Stylish and versatile 2-in-1.",
+    id: "10",
+    name: "Google Pixel 8",
+    price: 799,
+    description: "Smooth Android experience.",
   },
 ];
 
-export default function App() {
+export default function Phones() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
@@ -98,23 +84,12 @@ export default function App() {
               />
             )}
             contentContainerStyle={styles.listContent}
+            showsVerticalScrollIndicator={false}
           />
-        </View>
 
-        <View style={styles.listWrapper}>
-          <Text style={styles.header}>Laptops</Text>
-          <FlatList
-            data={laptops}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <Card
-                name={item.name}
-                price={item.price}
-                description={item.description}
-              />
-            )}
-            contentContainerStyle={styles.listContent}
-          />
+          <Link href="/laptops" style={styles.button}>
+            Go to Laptops
+          </Link>
         </View>
       </SafeAreaView>
     </SafeAreaProvider>
@@ -129,11 +104,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   listWrapper: {
-    flex: 0.5,
+    flex: 1,
   },
   header: {
     fontSize: 20,
     fontWeight: "600",
     marginVertical: 10,
+  },
+  button: {
+    backgroundColor: "#2E186A",
+    borderRadius: 10,
+    color: "#fff",
+    textAlign: "center",
+    padding: 12,
   },
 });
