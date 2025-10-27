@@ -26,7 +26,12 @@ export default function LaptopDetails() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", alignItems: "center", padding: 20 },
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
   title: { fontSize: 24, fontWeight: "bold", marginBottom: 8 },
   price: { fontSize: 18, color: "gray", marginBottom: 12 },
   description: { textAlign: "center", marginBottom: 20 },
