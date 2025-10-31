@@ -6,25 +6,23 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: "#2E186A",
-        tabBarStyle: { backgroundColor: "#f5f5f5", paddingVertical: 6 },
+        tabBarActiveTintColor: "#4400ff",
+        tabBarStyle: {
+          backgroundColor: "#ffffff",
+          borderTopWidth: 0,
+          elevation: 0,
+          shadowOpacity: 0,
+          shadowOffset: { height: 0, width: 0 },
+          shadowRadius: 0,
+        },
       }}
     >
       <Tabs.Screen
-        name="phones"
+        name="(profile)"
         options={{
-          title: "Phones",
+          title: "Profile",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="phone-portrait-outline" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="laptops"
-        options={{
-          title: "Laptops",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="laptop-outline" size={size} color={color} />
+            <Ionicons name="person-outline" size={size} color={color} />
           ),
         }}
       />

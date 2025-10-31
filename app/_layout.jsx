@@ -1,11 +1,20 @@
-import { Stack } from "expo-router";
+import { Slot } from "expo-router";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { View, StyleSheet } from "react-native";
 
 export default function RootLayout() {
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="(tabs)" />
-      <Stack.Screen name="phoneDetails/[id]" />
-      <Stack.Screen name="laptopDetails/[id]" />
-    </Stack>
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container}>
+        <Slot />
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#ffffff",
+  },
+});
