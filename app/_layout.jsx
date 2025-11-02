@@ -1,12 +1,15 @@
 import { Slot } from "expo-router";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
+import { ProfileProvider } from "../context/profile.context";
 
 export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        <Slot />
+        <ProfileProvider>
+          <Slot />
+        </ProfileProvider>
       </SafeAreaView>
     </SafeAreaProvider>
   );

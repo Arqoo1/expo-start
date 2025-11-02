@@ -1,31 +1,15 @@
-import { useReducer } from "react";
+import { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router";
-
-function reducer(state, action) {
-  switch (action.type) {
-    case "UPDATE_FIELD":
-      return { ...state, [action.field]: action.value };
-    default:
-      return state;
-  }
-}
+import { useRouter } from "expo-router";
+import { useProfile } from "../../../context/profile.hook";
 
 export default function EditProfile() {
-  const params = useLocalSearchParams();
+  const { profile, updateProfile } = useProfile();
+  const [form, setForm] = useState(profile);
   const router = useRouter();
 
-  const initialState = {
-    name: params.name || "",
-    surname: params.surname || "",
-    email: params.email || "",
-    phone: params.phone || "",
-  };
-
-  const [state, dispatch] = useReducer(reducer, initialState);
-
   const handleSave = () => {
-    console.log("Saved Profile:", state);
+    updateProfile(form);
     router.back();
   };
 
@@ -36,10 +20,8 @@ export default function EditProfile() {
           <Text style={styles.label}>{field.toUpperCase()}</Text>
           <TextInput
             style={styles.input}
-            value={state[field]}
-            onChangeText={(value) =>
-              dispatch({ type: "UPDATE_FIELD", field, value })
-            }
+            value={form[field]}
+            onChangeText={(value) => setForm({ ...form, [field]: value })}
           />
         </View>
       ))}
