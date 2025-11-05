@@ -5,13 +5,9 @@ import { ProfileProvider } from "../context/profile.context";
 
 export default function RootLayout() {
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
-        <ProfileProvider>
-          <Slot />
-        </ProfileProvider>
-      </SafeAreaView>
-    </SafeAreaProvider>
+    <ProfileProvider>
+      <Slot />
+    </ProfileProvider>
   );
 }
 

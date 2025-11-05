@@ -3,17 +3,28 @@ import { Link } from "expo-router";
 import { useProfile } from "../../../context/profile.hook";
 
 export default function ProfileDetails() {
-  const { profile } = useProfile();
+  const { loggedInUser } = useProfile();
+
+  if (!loggedInUser) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.text}>No user logged in.</Text>
+        <Link href="/login" asChild>
+          <Button title="Go to Login" color="#2E186A" />
+        </Link>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Name: {profile.name}</Text>
-      <Text style={styles.text}>Surname: {profile.surname}</Text>
-      <Text style={styles.text}>Email: {profile.email}</Text>
-      <Text style={styles.text}>Phone: {profile.phone}</Text>
+      <Text style={styles.text}>Name: {loggedInUser.name}</Text>
+      <Text style={styles.text}>Surname: {loggedInUser.surname}</Text>
+      <Text style={styles.text}>Email: {loggedInUser.email}</Text>
+      <Text style={styles.text}>Phone: {loggedInUser.phone}</Text>
 
       <Link href="edit" asChild>
-        <Button title="Edit Profile" />
+        <Button title="Edit Profile" color="#2E186A" />
       </Link>
     </View>
   );
