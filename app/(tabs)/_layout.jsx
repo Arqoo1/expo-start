@@ -26,7 +26,6 @@ export default function TabLayout() {
           ),
         }}
       />
-
       <Tabs.Screen
         name="(products)"
         options={{
@@ -36,7 +35,6 @@ export default function TabLayout() {
           ),
         }}
       />
-
       <Tabs.Screen
         name="(profile)"
         options={{

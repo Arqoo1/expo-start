@@ -2,7 +2,8 @@ import { View, TextInput, Button, Text, StyleSheet, Alert } from "react-native";
 import { Formik } from "formik";
 import { useRouter } from "expo-router";
 import { useProfile } from "../context/profile.hook";
-
+import { LoginSchema } from "../utils/validations";
+import ScreenWrapper from "../components/ScreenWrapper";
 export default function Login() {
   const { loginUser } = useProfile();
   const router = useRouter();
@@ -18,35 +19,58 @@ export default function Login() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
-      <Formik
-        initialValues={{ email: "", password: "" }}
-        onSubmit={handleLogin}
-      >
-        {({ handleChange, handleSubmit, values }) => (
-          <>
-            <TextInput
-              style={styles.input}
-              placeholder="Email"
-              value={values.email}
-              onChangeText={handleChange("email")}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Password"
-              secureTextEntry
-              value={values.password}
-              onChangeText={handleChange("password")}
-            />
-            <Button title="Login" color="#2E186A" onPress={handleSubmit} />
-            <Text style={styles.link} onPress={() => router.push("/register")}>
-              Don’t have an account? Register
-            </Text>
-          </>
-        )}
-      </Formik>
-    </View>
+    <ScreenWrapper>
+      <View style={styles.container}>
+        <Text style={styles.title}>Login</Text>
+        <Formik
+          initialValues={{ email: "", password: "" }}
+          validationSchema={LoginSchema}
+          onSubmit={handleLogin}
+        >
+          {({
+            handleChange,
+            handleSubmit,
+            values,
+            errors,
+            touched,
+            handleBlur,
+          }) => (
+            <>
+              <TextInput
+                style={styles.input}
+                placeholder="Email"
+                value={values.email}
+                onChangeText={handleChange("email")}
+                onBlur={handleBlur("email")}
+              />
+              {touched.email && errors.email && (
+                <Text style={styles.error}>{errors.email}</Text>
+              )}
+
+              <TextInput
+                style={styles.input}
+                placeholder="Password"
+                secureTextEntry
+                value={values.password}
+                onChangeText={handleChange("password")}
+                onBlur={handleBlur("password")}
+              />
+              {touched.password && errors.password && (
+                <Text style={styles.error}>{errors.password}</Text>
+              )}
+
+              <Button title="Login" color="#2E186A" onPress={handleSubmit} />
+              <Text
+                style={styles.link}
+                onPress={() => router.push("/register")}
+              >
+                Don’t have an account? Register
+              </Text>
+            </>
+          )}
+        </Formik>
+      </View>
+    </ScreenWrapper>
   );
 }
 
@@ -63,7 +87,13 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     padding: 10,
     borderRadius: 8,
+    marginBottom: 5,
+  },
+  error: {
+    color: "red",
     marginBottom: 10,
+    marginLeft: 5,
+    fontSize: 13,
   },
   link: {
     textAlign: "center",

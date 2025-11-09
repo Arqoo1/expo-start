@@ -1,19 +1,35 @@
-import { Slot } from "expo-router";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { StyleSheet } from "react-native";
-import { ProfileProvider } from "../context/profile.context";
+import { Stack } from "expo-router";
+import { useContext } from "react";
+import { ProfileProvider, ProfileContext } from "../context/profile.context";
+import {
+  SafeAreaView,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+} from "react-native";
+
+function LayoutContent() {
+  const { loggedInUser } = useContext(ProfileContext);
+
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      {!loggedInUser ? (
+        <Stack.Screen name="login" />
+      ) : (
+        <Stack.Screen name="(tabs)" />
+      )}
+    </Stack>
+  );
+}
 
 export default function RootLayout() {
   return (
     <ProfileProvider>
-      <Slot />
+      <LayoutContent />
     </ProfileProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#ffffff",
-  },
+  container: { flex: 1, backgroundColor: "#fff" },
 });

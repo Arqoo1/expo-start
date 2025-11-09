@@ -12,7 +12,6 @@ export default function Laptops() {
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
         <View style={styles.listWrapper}>
-          <Text style={styles.header}>Laptops</Text>
           <FlatList
             data={laptops}
             keyExtractor={(item) => item.id}

@@ -7,14 +7,6 @@ export default function Home() {
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
         <Text style={styles.title}>HOME PAGE</Text>
-        <View style={styles.authButtons}>
-          <Link href="/register" asChild>
-            <Button title="Register" color="#2E186A" />
-          </Link>
-          <Link href="/login" asChild>
-            <Button title="Login" color="#2E186A" />
-          </Link>
-        </View>
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -31,10 +23,5 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
-  },
-  authButtons: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
   },
 });
