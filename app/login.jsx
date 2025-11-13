@@ -4,12 +4,13 @@ import { useRouter } from "expo-router";
 import { useProfile } from "../context/profile.hook";
 import { LoginSchema } from "../utils/validations";
 import ScreenWrapper from "../components/ScreenWrapper";
+
 export default function Login() {
   const { loginUser } = useProfile();
   const router = useRouter();
 
-  const handleLogin = (values) => {
-    const success = loginUser(values.email, values.password);
+  const handleLogin = async (values) => {
+    const success = await loginUser(values.email, values.password);
     if (success) {
       Alert.alert("Success", "Logged in successfully!");
       router.replace("/(tabs)/(profile)/details");
@@ -89,12 +90,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 5,
   },
-  error: {
-    color: "red",
-    marginBottom: 10,
-    marginLeft: 5,
-    fontSize: 13,
-  },
+  error: { color: "red", marginBottom: 10, marginLeft: 5, fontSize: 13 },
   link: {
     textAlign: "center",
     marginTop: 15,
