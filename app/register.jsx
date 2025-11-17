@@ -12,7 +12,7 @@ export default function Register() {
   const handleRegister = async (values) => {
     await registerUser(values);
     Alert.alert("Success", "Registered successfully!");
-    router.replace("/login");
+    router.replace("/index");
   };
 
   return (
