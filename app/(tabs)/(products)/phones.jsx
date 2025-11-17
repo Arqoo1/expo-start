@@ -17,6 +17,7 @@ export default function Phones() {
                 id={item.id}
                 name={item.name}
                 price={item.price}
+                image={item.image}
                 description={item.description}
                 detailsLink="/phoneDetails"
               />

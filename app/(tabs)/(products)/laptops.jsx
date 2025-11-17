@@ -21,6 +21,7 @@ export default function Laptops() {
                 name={item.name}
                 price={item.price}
                 description={item.description}
+                image={item.image}
                 detailsLink="/laptopDetails"
               />
             )}
