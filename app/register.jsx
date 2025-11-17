@@ -12,7 +12,7 @@ export default function Register() {
   const handleRegister = async (values) => {
     await registerUser(values);
     Alert.alert("Success", "Registered successfully!");
-    router.replace("/index");
+    router.replace("/");
   };
 
   return (
@@ -96,7 +96,7 @@ export default function Register() {
               )}
 
               <Button title="Register" color="#2E186A" onPress={handleSubmit} />
-              <Text style={styles.link} onPress={() => router.push("/login")}>
+              <Text style={styles.link} onPress={() => router.push("/")}>
                 Already have an account? Login
               </Text>
             </>
