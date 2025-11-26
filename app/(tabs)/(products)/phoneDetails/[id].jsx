@@ -1,41 +1,51 @@
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import { useEffect, useState } from "react";
+import { StyleSheet, Text, Pressable } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter, Stack } from "expo-router";
-import { phones } from "../../../../data/products";
+import Loading from "../../../../components/Loading";
+import { useProducts } from "../../../../context/products.context";
 
 export default function PhoneDetails() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
-  const phone = phones.find((item) => item.id === id);
+  const { state } = useProducts();
+  const { phones, loading } = state;
+  const [phone, setPhone] = useState(null);
+
+  useEffect(() => {
+    if (!loading) {
+      const item = phones.find((p) => p.id.toString() === id);
+      setPhone(item || null);
+    }
+  }, [loading, phones, id]);
+
+  if (loading) return <Loading />;
 
   if (!phone) {
     return (
-      <SafeAreaProvider>
-        <SafeAreaView style={styles.container}>
-          <Text style={styles.error}>Phone not found</Text>
-          <Pressable style={styles.button} onPress={() => router.back()}>
-            <Text style={styles.buttonText}>Go Back</Text>
-          </Pressable>
-        </SafeAreaView>
-      </SafeAreaProvider>
+      <Text style={{ fontSize: 20, textAlign: "center" }}>
+        Product not found
+      </Text>
     );
   }
 
-  return (
-    <SafeAreaProvider>
-      <Stack.Screen options={{ title: phone.name }} />
-
-      <SafeAreaView style={styles.container}>
-        <Text style={styles.title}>{phone.name}</Text>
-        <Text style={styles.price}>${phone.price}</Text>
-        <Text style={styles.description}>{phone.description}</Text>
-        <Pressable style={styles.button} onPress={() => router.back()}>
-          <Text style={styles.buttonText}>Go Back</Text>
-        </Pressable>
-      </SafeAreaView>
-    </SafeAreaProvider>
-  );
+  return <ProductView product={phone} router={router} />;
 }
+
+// Reusable product display
+const ProductView = ({ product, router }) => (
+  <SafeAreaProvider>
+    <Stack.Screen options={{ title: product.name }} />
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.title}>{product.name}</Text>
+      <Text style={styles.price}>${product.price}</Text>
+      <Text style={styles.description}>{product.description}</Text>
+      <Pressable style={styles.button} onPress={() => router.back()}>
+        <Text style={styles.buttonText}>Go Back</Text>
+      </Pressable>
+    </SafeAreaView>
+  </SafeAreaProvider>
+);
 
 const styles = StyleSheet.create({
   container: {
@@ -44,35 +54,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 8,
-  },
-  price: {
-    fontSize: 18,
-    color: "gray",
-    marginBottom: 12,
-  },
-  description: {
-    fontSize: 16,
-    textAlign: "center",
-    marginBottom: 20,
-  },
-  error: {
-    fontSize: 18,
-    color: "red",
-    marginBottom: 12,
-  },
+  title: { fontSize: 24, fontWeight: "bold", marginBottom: 8 },
+  price: { fontSize: 18, color: "gray", marginBottom: 12 },
+  description: { fontSize: 16, textAlign: "center", marginBottom: 20 },
   button: {
     backgroundColor: "#2E186A",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 8,
   },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    textAlign: "center",
-  },
+  buttonText: { color: "#fff", fontSize: 16, textAlign: "center" },
 });

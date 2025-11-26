@@ -1,12 +1,22 @@
-import { StyleSheet, View, FlatList, Text, Button } from "react-native";
+import { StyleSheet, View, FlatList, Text, Button, ActivityIndicator } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { width, height } from "../../../constants/Dimensions";
 import Card from "../../../components/Card";
-import { laptops } from "../../../data/products";
+import { useProducts } from "../../../context/products.context"; // <-- context
+import Loading from "../../../components/Loading";
 
 export default function Laptops() {
   const router = useRouter();
+  const { state } = useProducts();
+
+  const { laptops, loading, error } = state;
+
+  if (loading) {
+    return (
+<Loading/>
+    );
+  }
 
   return (
     <SafeAreaProvider>
@@ -14,7 +24,7 @@ export default function Laptops() {
         <View style={styles.listWrapper}>
           <FlatList
             data={laptops}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <Card
                 id={item.id}
@@ -50,11 +60,6 @@ const styles = StyleSheet.create({
   },
   listWrapper: {
     flex: 1,
-  },
-  header: {
-    fontSize: 20,
-    fontWeight: "600",
-    marginVertical: 10,
   },
   buttonWrapper: {
     marginVertical: 15,

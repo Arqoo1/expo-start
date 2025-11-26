@@ -1,17 +1,25 @@
-import { StyleSheet, View, FlatList, Text } from "react-native";
+import { StyleSheet, View, FlatList, ActivityIndicator } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { width, height } from "../../../constants/Dimensions";
 import Card from "../../../components/Card";
-import { phones } from "../../../data/products";
+import { useProducts } from "../../../context/products.context";
+import Loading from "../../../components/Loading";
 
 export default function Phones() {
+  const { state } = useProducts();
+  const { phones, loading, error } = state;
+
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
         <View style={styles.listWrapper}>
           <FlatList
             data={phones}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <Card
                 id={item.id}
@@ -39,10 +47,5 @@ const styles = StyleSheet.create({
   },
   listWrapper: {
     flex: 1,
-  },
-  header: {
-    fontSize: 20,
-    fontWeight: "600",
-    marginVertical: 10,
   },
 });
