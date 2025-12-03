@@ -1,15 +1,19 @@
-import { StyleSheet, View, FlatList, ActivityIndicator } from "react-native";
+import { StyleSheet, View, FlatList } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { width, height } from "../../../constants/Dimensions";
 import Card from "../../../components/Card";
-import { useProducts } from "../../../context/products.context";
 import Loading from "../../../components/Loading";
 
-export default function Phones() {
-  const { state } = useProducts();
-  const { phones, loading, error } = state;
+import { usePhones } from "../../../api/phones/usePhones";
 
-  if (loading) {
+export default function Phones() {
+  const { data: phones, isLoading, error, refetch, isFetching } = usePhones();
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (error) {
     return <Loading />;
   }
 
@@ -19,10 +23,10 @@ export default function Phones() {
         <View style={styles.listWrapper}>
           <FlatList
             data={phones}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={(item) => item._id.toString()}
             renderItem={({ item }) => (
               <Card
-                id={item.id}
+                id={item._id}
                 name={item.name}
                 price={item.price}
                 image={item.image}
@@ -31,6 +35,8 @@ export default function Phones() {
               />
             )}
             showsVerticalScrollIndicator={false}
+            refreshing={isFetching}
+            onRefresh={refetch}
           />
         </View>
       </SafeAreaView>

@@ -1,21 +1,22 @@
-import { StyleSheet, View, FlatList, Text, Button, ActivityIndicator } from "react-native";
+import { StyleSheet, View, FlatList, Button } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { width, height } from "../../../constants/Dimensions";
 import Card from "../../../components/Card";
-import { useProducts } from "../../../context/products.context"; // <-- context
 import Loading from "../../../components/Loading";
+
+import { useLaptops } from "../../../api/laptops/useLaptops";
 
 export default function Laptops() {
   const router = useRouter();
-  const { state } = useProducts();
+  const { data: laptops, isLoading, error, refetch, isFetching } = useLaptops();
 
-  const { laptops, loading, error } = state;
+  if (isLoading) {
+    return <Loading />;
+  }
 
-  if (loading) {
-    return (
-<Loading/>
-    );
+  if (error) {
+    return <Button title="Error loading laptops" onPress={() => refetch()} />;
   }
 
   return (
@@ -24,10 +25,10 @@ export default function Laptops() {
         <View style={styles.listWrapper}>
           <FlatList
             data={laptops}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={(item) => item._id.toString()}
             renderItem={({ item }) => (
               <Card
-                id={item.id}
+                id={item._id}
                 name={item.name}
                 price={item.price}
                 description={item.description}
@@ -36,6 +37,8 @@ export default function Laptops() {
               />
             )}
             showsVerticalScrollIndicator={false}
+            refreshing={isFetching}
+            onRefresh={refetch}
           />
         </View>
 

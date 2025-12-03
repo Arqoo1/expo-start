@@ -1,27 +1,19 @@
-import { useEffect, useState } from "react";
 import { StyleSheet, Text, Pressable } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter, Stack } from "expo-router";
 import Loading from "../../../../components/Loading";
-import { useProducts } from "../../../../context/products.context";
+
+import { useLaptop } from "../../../../api/laptops/useLaptops";
 
 export default function LaptopDetails() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
-  const { state } = useProducts();
-  const { laptops, loading } = state;
-  const [laptop, setLaptop] = useState(null);
 
-  useEffect(() => {
-    if (!loading) {
-      const item = laptops.find((p) => p.id.toString() === id);
-      setLaptop(item || null);
-    }
-  }, [loading, laptops, id]);
+  const { data: laptop, isLoading, error } = useLaptop(id);
 
-  if (loading) return <Loading />;
+  if (isLoading) return <Loading />;
 
-  if (!laptop) {
+  if (error || !laptop) {
     return (
       <Text style={{ fontSize: 20, textAlign: "center" }}>
         Product not found

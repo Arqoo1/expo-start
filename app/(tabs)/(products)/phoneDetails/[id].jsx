@@ -1,27 +1,19 @@
-import { useEffect, useState } from "react";
 import { StyleSheet, Text, Pressable } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter, Stack } from "expo-router";
 import Loading from "../../../../components/Loading";
-import { useProducts } from "../../../../context/products.context";
+
+import { usePhone } from "../../../../api/phones/usePhones";
 
 export default function PhoneDetails() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
-  const { state } = useProducts();
-  const { phones, loading } = state;
-  const [phone, setPhone] = useState(null);
 
-  useEffect(() => {
-    if (!loading) {
-      const item = phones.find((p) => p.id.toString() === id);
-      setPhone(item || null);
-    }
-  }, [loading, phones, id]);
+  const { data: phone, isLoading, error } = usePhone(id);
 
-  if (loading) return <Loading />;
+  if (isLoading) return <Loading />;
 
-  if (!phone) {
+  if (error || !phone) {
     return (
       <Text style={{ fontSize: 20, textAlign: "center" }}>
         Product not found

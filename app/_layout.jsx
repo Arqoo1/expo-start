@@ -3,6 +3,10 @@ import { useContext, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ProfileProvider, ProfileContext } from "../context/profile.context";
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
+
 function LayoutContent() {
   const { dispatch } = useContext(ProfileContext);
   const router = useRouter();
@@ -36,12 +40,14 @@ function LayoutContent() {
 
 export default function RootLayout() {
   return (
-    <ProfileProvider>
-      <LayoutContent />
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="index" />
-        <Stack.Screen name="(tabs)" />
-      </Stack>
-    </ProfileProvider>
+    <QueryClientProvider client={queryClient}>
+      <ProfileProvider>
+        <LayoutContent />
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="index" />
+          <Stack.Screen name="(tabs)" />
+        </Stack>
+      </ProfileProvider>
+    </QueryClientProvider>
   );
 }
