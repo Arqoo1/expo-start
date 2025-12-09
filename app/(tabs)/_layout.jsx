@@ -1,10 +1,9 @@
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { ProductsProvider } from "../../context/products.context";
+
 
 export default function TabLayout() {
   return (
-    <ProductsProvider>
       <Tabs
         screenOptions={{
           headerShown: false,
@@ -47,6 +46,5 @@ export default function TabLayout() {
           }}
         />
       </Tabs>
-    </ProductsProvider>
   );
 }
