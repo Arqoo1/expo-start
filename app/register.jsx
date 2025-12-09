@@ -1,24 +1,44 @@
 import { View, TextInput, Button, Text, StyleSheet, Alert } from "react-native";
 import { Formik } from "formik";
 import { useRouter } from "expo-router";
-import { useProfile } from "../context/profile.hook";
 import { RegisterSchema } from "../utils/validations";
 import ScreenWrapper from "../components/ScreenWrapper";
+import { useRegister } from "../api/auth/useAuth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Register() {
-  const { registerUser } = useProfile();
   const router = useRouter();
+  const { mutate: register, isPending } = useRegister();
 
-  const handleRegister = async (values) => {
-    await registerUser(values);
-    Alert.alert("Success", "Registered successfully!");
-    router.replace("/");
-  };
+const handleRegister = (values) => {
+  register(values, {
+    onSuccess: async (data) => {
+      console.log("✅ REGISTERED USER CREDENTIALS:");
+      console.log("📧 Email:", values.email);
+      console.log("🔑 Password:", values.password);
+
+      if (data?.token && data?.user) {
+        await AsyncStorage.setItem("token", data.token);
+        await AsyncStorage.setItem("user", JSON.stringify(data.user));
+      }
+
+      Alert.alert("Success", "Registered successfully!");
+      router.replace("/home");
+    },
+    onError: (err) => {
+      Alert.alert(
+        "Error",
+        err?.response?.data?.error || "Registration failed"
+      );
+    },
+  });
+};
 
   return (
     <ScreenWrapper>
       <View style={styles.container}>
         <Text style={styles.title}>Register</Text>
+
         <Formik
           initialValues={{
             name: "",
@@ -67,6 +87,7 @@ export default function Register() {
                 value={values.email}
                 onChangeText={handleChange("email")}
                 onBlur={handleBlur("email")}
+                autoCapitalize="none"
               />
               {touched.email && errors.email && (
                 <Text style={styles.error}>{errors.email}</Text>
@@ -95,7 +116,13 @@ export default function Register() {
                 <Text style={styles.error}>{errors.password}</Text>
               )}
 
-              <Button title="Register" color="#2E186A" onPress={handleSubmit} />
+              <Button
+                title={isPending ? "Registering..." : "Register"}
+                color="#2E186A"
+                onPress={handleSubmit}
+                disabled={isPending}
+              />
+
               <Text style={styles.link} onPress={() => router.push("/")}>
                 Already have an account? Login
               </Text>

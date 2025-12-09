@@ -1,28 +1,40 @@
 import { View, TextInput, Button, Text, StyleSheet, Alert } from "react-native";
 import { Formik } from "formik";
 import { useRouter } from "expo-router";
-import { useProfile } from "../context/profile.hook";
 import { LoginSchema } from "../utils/validations";
 import ScreenWrapper from "../components/ScreenWrapper";
+import { useLogin } from "../api/auth/useAuth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Login() {
-  const { loginUser } = useProfile();
   const router = useRouter();
+  const { mutate: login, isPending } = useLogin();
 
-  const handleLogin = async (values) => {
-    const success = await loginUser(values.email, values.password);
-    if (success) {
+const handleLogin = (values) => {
+  login(values, {
+    onSuccess: async (data) => {
+      if (!data?.token || !data?.user) {
+        Alert.alert("Error", "Login response invalid");
+        return;
+      }
+
+      await AsyncStorage.setItem("token", data.token);
+      await AsyncStorage.setItem("user", JSON.stringify(data.user));
+
       Alert.alert("Success", "Logged in successfully!");
       router.replace("/(tabs)/(profile)/details");
-    } else {
-      Alert.alert("Error", "Invalid email or password");
-    }
-  };
-
+    },
+    onError: (err) => {
+      const message = err?.response?.data?.error || err?.message || "Login failed";
+      Alert.alert("Error", message);
+    },
+  });
+};
   return (
     <ScreenWrapper>
       <View style={styles.container}>
         <Text style={styles.title}>Login</Text>
+
         <Formik
           initialValues={{ email: "", password: "" }}
           validationSchema={LoginSchema}
@@ -43,6 +55,7 @@ export default function Login() {
                 value={values.email}
                 onChangeText={handleChange("email")}
                 onBlur={handleBlur("email")}
+                autoCapitalize="none"
               />
               {touched.email && errors.email && (
                 <Text style={styles.error}>{errors.email}</Text>
@@ -60,7 +73,13 @@ export default function Login() {
                 <Text style={styles.error}>{errors.password}</Text>
               )}
 
-              <Button title="Login" color="#2E186A" onPress={handleSubmit} />
+              <Button
+                title={isPending ? "Logging in..." : "Login"}
+                color="#2E186A"
+                onPress={handleSubmit}
+                disabled={isPending}
+              />
+
               <Text
                 style={styles.link}
                 onPress={() => router.push("/register")}

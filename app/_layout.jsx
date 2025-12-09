@@ -1,38 +1,31 @@
+import { useEffect } from "react";
 import { Stack, useRouter } from "expo-router";
-import { useContext, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ProfileProvider, ProfileContext } from "../context/profile.context";
-
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient();
 
 function LayoutContent() {
-  const { dispatch } = useContext(ProfileContext);
   const router = useRouter();
 
   useEffect(() => {
-    const checkUser = async () => {
+    const bootAuth = async () => {
       try {
-        console.log("🔍 Checking AsyncStorage for logged-in user...");
-        const storedUser = await AsyncStorage.getItem("loggedInUser");
+        const token = await AsyncStorage.getItem("token");
+        const user = await AsyncStorage.getItem("user");
 
-        if (storedUser) {
-          const parsedUser = JSON.parse(storedUser);
-          console.log("✅ Found stored user:", parsedUser);
-          dispatch({ type: "SET_USER", payload: parsedUser });
-          router.replace("/home");
-        } else {
-          console.log("⚠️ No user found in AsyncStorage.");
-          router.replace("/");
+        if (!token || !user) {
+          router.replace("/"); 
+          return;
         }
-      } catch (error) {
-        console.log("❌ Error checking AsyncStorage:", error);
+
+        router.replace("/home"); 
+      } catch (err) {
         router.replace("/");
       }
     };
 
-    checkUser();
+    bootAuth();
   }, []);
 
   return null;
@@ -41,13 +34,11 @@ function LayoutContent() {
 export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ProfileProvider>
-        <LayoutContent />
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="index" />
-          <Stack.Screen name="(tabs)" />
-        </Stack>
-      </ProfileProvider>
+      <LayoutContent />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="index" />
+        <Stack.Screen name="(tabs)" />
+      </Stack>
     </QueryClientProvider>
   );
 }
