@@ -1,35 +1,38 @@
 import { useEffect } from "react";
 import { Stack, useRouter } from "expo-router";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useVerify } from "../api/auth/useAuth";
 
 const queryClient = new QueryClient();
 
 function LayoutContent() {
   const router = useRouter();
+  const { data, isLoading, isError } = useVerify();
 
   useEffect(() => {
-    const bootAuth = async () => {
-      try {
-        const token = await AsyncStorage.getItem("token");
-        const user = await AsyncStorage.getItem("user");
+    const init = async () => {
+      if (isLoading) return;
 
-        if (!token || !user) {
-          router.replace("/"); 
-          return;
-        }
-
-        router.replace("/home"); 
-      } catch (err) {
+      if (isError) {
+        await AsyncStorage.multiRemove(["token", "user"]);
         router.replace("/");
+        return;
+      }
+
+      if (data) {
+        await AsyncStorage.setItem("user", JSON.stringify(data.user));
+        router.replace("/(tabs)");
       }
     };
 
-    bootAuth();
-  }, []);
+    init();
+  }, [isLoading, isError, data]);
 
   return null;
 }
+
+
 
 export default function RootLayout() {
   return (
@@ -37,6 +40,7 @@ export default function RootLayout() {
       <LayoutContent />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
+        <Stack.Screen name="register" />
         <Stack.Screen name="(tabs)" />
       </Stack>
     </QueryClientProvider>
