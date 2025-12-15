@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { api } from "../axios";
 import { useQuery } from "@tanstack/react-query";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // REGISTER
 const registerRequest = async (data) => {
@@ -37,20 +38,13 @@ export const useLogin = () => {
   });
 };
 
-// VERIFY TOKEN
 const verifyRequest = async () => {
   const token = await AsyncStorage.getItem("token");
-  console.log("Stored token:", token);
-
   if (!token) {
     throw new Error("No token");
   }
 
-  const res = await api.get("/auth/verify", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const res = await api.get("/auth/verify");
 
   return res.data;
 };
@@ -61,5 +55,6 @@ export const useVerify = () => {
     queryFn: verifyRequest,
     retry: false,
     staleTime: 0,
+    enabled: true,
   });
 };
