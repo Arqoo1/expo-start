@@ -55,6 +55,6 @@ export const useVerify = () => {
     queryFn: verifyRequest,
     retry: false,
     staleTime: 0,
-    enabled: true,
+    enabled: false,
   });
 };

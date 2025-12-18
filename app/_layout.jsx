@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { View, ActivityIndicator } from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -8,59 +8,61 @@ import BaseInterceptor from "../interceptors/base.interceptor";
 
 const queryClient = new QueryClient();
 
-// LayoutContent handles verification and redirect
-export function LayoutContent({ onDone }) {
+function Bootstrap() {
   const router = useRouter();
-  const { data, isLoading, isError } = useVerify();
+  const [ready, setReady] = useState(false);
+  const { refetch } = useVerify();
 
   useEffect(() => {
-    if (isLoading) return;
+    const run = async () => {
+      const token = await AsyncStorage.getItem("token");
 
-    const bootstrap = async () => {
-      if (isError || !data?.user) {
-        await AsyncStorage.removeItem("token"); // clear invalid token
-        onDone(); // signal RootLayout to render login/register
+      if (!token) {
+        setReady(true);
         return;
       }
 
-      // Token is valid, store user
-      await AsyncStorage.setItem("user", JSON.stringify(data.user));
+      try {
+        const res = await refetch();
 
-      // Redirect to tabs
-      router.replace("/(tabs)");
-      onDone(); // stop loader in RootLayout
+        if (!res.data?.user) {
+          throw new Error("Invalid token");
+        }
+
+        await AsyncStorage.setItem("user", JSON.stringify(res.data.user));
+
+        router.replace("/(tabs)");
+      } catch {
+        await AsyncStorage.removeItem("token");
+      } finally {
+        setReady(true);
+      }
     };
 
-    bootstrap();
+    run();
   }, []);
 
-  return null;
-}
-
-// RootLayout
-export default function RootLayout() {
-  const [ready, setReady] = useState(false); // loader state
+  if (!ready) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
   return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="index" />
+      <Stack.Screen name="register" />
+      <Stack.Screen name="(tabs)" />
+    </Stack>
+  );
+}
+
+export default function RootLayout() {
+  return (
     <QueryClientProvider client={queryClient}>
-      {!ready && (
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
-          <ActivityIndicator size="large" />
-        </View>
-      )}
-
-      {!ready && <LayoutContent onDone={() => setReady(true)} />}
-
-      {ready && (
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="index" />
-          <Stack.Screen name="register" />
-          <Stack.Screen name="(tabs)" />
-        </Stack>
-      )}
-
+      <Bootstrap />
       <BaseInterceptor />
     </QueryClientProvider>
   );
