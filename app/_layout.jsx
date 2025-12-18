@@ -8,28 +8,39 @@ import BaseInterceptor from "../interceptors/base.interceptor";
 
 const queryClient = new QueryClient();
 
+let hasBootstrapped = false;
+
 function Bootstrap() {
   const router = useRouter();
   const [ready, setReady] = useState(false);
   const { refetch } = useVerify();
 
   useEffect(() => {
+    if (hasBootstrapped) {
+      setReady(true);
+      return;
+    }
+
+    hasBootstrapped = true;
+
     const run = async () => {
-      const token = await AsyncStorage.getItem("token");
-
-      if (!token) {
-        setReady(true);
-        return;
-      }
-
       try {
+        const token = await AsyncStorage.getItem("token");
+
+        if (!token) {
+          return;
+        }
+
         const res = await refetch();
 
         if (!res.data?.user) {
           throw new Error("Invalid token");
         }
 
-        await AsyncStorage.setItem("user", JSON.stringify(res.data.user));
+        await AsyncStorage.setItem(
+          "user",
+          JSON.stringify(res.data.user)
+        );
 
         router.replace("/(tabs)");
       } catch {
