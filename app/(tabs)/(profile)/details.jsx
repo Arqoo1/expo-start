@@ -1,51 +1,77 @@
 import { View, Text, Button, StyleSheet } from "react-native";
 import { Link, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useProfile } from "../../../api/profile";
+import { useLogout } from "../../../api/auth/useAuth";
 
 export default function ProfileDetails() {
-  const [user, setUser] = useState(null);
   const router = useRouter();
+  const { data: user, isLoading, isError } = useProfile();
+  const { mutate: logout, isPending } = useLogout();
 
-  useEffect(() => {
-    const loadUser = async () => {
-      const storedUser = await AsyncStorage.getItem("user");
-      if (!storedUser) {
-        router.replace("/login");
-        return;
-      }
-      setUser(JSON.parse(storedUser));
-    };
-
-    loadUser();
-  }, []);
-
-  if (!user) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.text}>No user logged in.</Text>
-        <Link href="/login" asChild>
-          <Button title="Go to Login" color="#2E186A" />
-        </Link>
-      </View>
-    );
+  if (isLoading) {
+    return <Text>Loading...</Text>;
   }
+
+  if (isError || !user) {
+    router.replace("/login");
+    return null;
+  }
+
+  const handleLogout = () => {
+    logout(undefined, {
+      onSuccess: () => {
+        router.replace("/login");
+      },
+    });
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Name: {user.name}</Text>
-      <Text style={styles.text}>Surname: {user.surname}</Text>
-      <Text style={styles.text}>Email: {user.email}</Text>
-      <Text style={styles.text}>Phone: {user.phone}</Text>
+      <Text style={styles.label}>Name:</Text>
+      <Text style={styles.value}>{user.name}</Text>
 
-      <Link href="edit" asChild>
-        <Button title="Edit Profile" color="#2E186A" />
-      </Link>
+      <Text style={styles.label}>Surname:</Text>
+      <Text style={styles.value}>{user.surname}</Text>
+
+      <Text style={styles.label}>Email:</Text>
+      <Text style={styles.value}>{user.email}</Text>
+
+      <Text style={styles.label}>Phone:</Text>
+      <Text style={styles.value}>{user.phone}</Text>
+
+      <View style={styles.buttonWrapper}>
+        <Link href="edit" asChild>
+          <Button title="Edit Profile" />
+        </Link>
+      </View>
+
+      <View style={styles.buttonWrapper}>
+        <Button
+          title={isPending ? "Logging out..." : "Logout"}
+          onPress={handleLogout}
+          disabled={isPending}
+          color="red"
+        />
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", padding: 20 },
-  text: { fontSize: 18, marginBottom: 10 },
+  container: {
+    padding: 20,
+  },
+  label: {
+    fontWeight: "bold",
+    fontSize: 16,
+    marginTop: 12,
+  },
+  value: {
+    fontSize: 16,
+    marginBottom: 4,
+    color: "#333",
+  },
+  buttonWrapper: {
+    marginTop: 16,
+  },
 });

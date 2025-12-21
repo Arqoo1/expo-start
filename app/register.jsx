@@ -10,29 +10,29 @@ export default function Register() {
   const router = useRouter();
   const { mutate: register, isPending } = useRegister();
 
-const handleRegister = (values) => {
-  register(values, {
-    onSuccess: async (data) => {
-      console.log("✅ REGISTERED USER CREDENTIALS:");
-      console.log("📧 Email:", values.email);
-      console.log("🔑 Password:", values.password);
+  const handleRegister = (values) => {
+    register(values, {
+      onSuccess: async (data) => {
+        console.log("✅ REGISTERED USER CREDENTIALS:");
+        console.log("📧 Email:", values.email);
+        console.log("🔑 Password:", values.password);
 
-      if (data?.token && data?.user) {
-        await AsyncStorage.setItem("token", data.token);
-        await AsyncStorage.setItem("user", JSON.stringify(data.user));
-      }
+        if (data?.token && data?.user) {
+          await AsyncStorage.setItem("token", data.token);
+          await AsyncStorage.setItem("user", JSON.stringify(data.user));
+        }
 
-      Alert.alert("Success", "Registered successfully!");
-      router.replace("/home");
-    },
-    onError: (err) => {
-      Alert.alert(
-        "Error",
-        err?.response?.data?.error || "Registration failed"
-      );
-    },
-  });
-};
+        Alert.alert("Success", "Registered successfully!");
+        router.replace("/home");
+      },
+      onError: (err) => {
+        Alert.alert(
+          "Error",
+          err?.response?.data?.error || "Registration failed"
+        );
+      },
+    });
+  };
 
   return (
     <ScreenWrapper>

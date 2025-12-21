@@ -37,10 +37,7 @@ function Bootstrap() {
           throw new Error("Invalid token");
         }
 
-        await AsyncStorage.setItem(
-          "user",
-          JSON.stringify(res.data.user)
-        );
+        await AsyncStorage.setItem("user", JSON.stringify(res.data.user));
 
         router.replace("/(tabs)");
       } catch {

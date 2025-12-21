@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../axios";
 import { useQuery } from "@tanstack/react-query";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -56,5 +56,18 @@ export const useVerify = () => {
     retry: false,
     staleTime: 0,
     enabled: false,
+  });
+};
+
+export const useLogout = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      await AsyncStorage.multiRemove(["token", "user"]);
+    },
+    onSuccess: async () => {
+      await queryClient.clear();
+    },
   });
 };
