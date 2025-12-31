@@ -7,7 +7,6 @@ jest.mock("@react-native-async-storage/async-storage", () => ({
   multiRemove: jest.fn(),
 }));
 
-// We need a real QueryClient to verify it gets cleared
 const queryClient = new QueryClient();
 const wrapper = ({ children }) => (
   <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
@@ -15,7 +14,6 @@ const wrapper = ({ children }) => (
 
 describe("useLogout Hook", () => {
   it("clears storage and query cache on logout", async () => {
-    // Spy on the clear method
     const clearSpy = jest.spyOn(queryClient, "clear");
 
     const { result } = renderHook(() => useLogout(), { wrapper });
@@ -23,10 +21,8 @@ describe("useLogout Hook", () => {
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    // Verify storage removal
     expect(AsyncStorage.multiRemove).toHaveBeenCalledWith(["token", "user"]);
     
-    // Verify cache clearing
     expect(clearSpy).toHaveBeenCalled();
   });
 });

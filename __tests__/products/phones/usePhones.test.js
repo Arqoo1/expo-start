@@ -4,7 +4,7 @@ import { usePhones, usePhone } from "../../../api/phones/usePhones"; // Adjust p
 import { api } from "../../../api/axios"; // Adjust path
 
 // 1. Mock Axios
-jest.mock("../api/axios", () => ({
+jest.mock("../../../api/axios", () => ({
   api: {
     get: jest.fn(),
   },

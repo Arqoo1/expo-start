@@ -4,8 +4,7 @@ import { useLogin } from "../../api/auth/useAuth";
 import { api } from "../../api/axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// Mock API and Storage
-jest.mock("../api/axios", () => ({
+jest.mock("../../api/axios", () => ({
   api: { post: jest.fn() }
 }));
 
@@ -42,18 +41,15 @@ describe("useLogin Hook", () => {
 
     const { result } = renderHook(() => useLogin(), { wrapper: createWrapper() });
 
-    // Trigger login
     result.current.mutate(rawInput);
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    // 1. Verify Trimming logic
     expect(api.post).toHaveBeenCalledWith("/auth/login", {
       email: "user@test.com",
       password: "secret123"
     });
 
-    // 2. Verify side effect: AsyncStorage saving
     expect(AsyncStorage.setItem).toHaveBeenCalledWith("token", "fake-jwt-token");
     expect(AsyncStorage.setItem).toHaveBeenCalledWith("user", JSON.stringify(mockResponse.user));
   });
@@ -68,7 +64,6 @@ describe("useLogin Hook", () => {
     await waitFor(() => expect(result.current.isError).toBe(true));
     expect(result.current.error.message).toBe("Invalid credentials");
     
-    // Verify storage was NOT called
     expect(AsyncStorage.setItem).not.toHaveBeenCalled();
   });
 });

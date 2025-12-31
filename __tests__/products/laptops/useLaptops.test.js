@@ -1,23 +1,21 @@
 import { renderHook, waitFor } from "@testing-library/react-native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useLaptops, useLaptop } from "../../../api/laptops/useLaptops"; // Adjust path
-import { api } from "../../../api/axios"; // Adjust path
+import { useLaptops, useLaptop } from "../../../api/laptops/useLaptops"; 
+import { api } from "../../../api/axios"; 
 
-// 1. Mock the API instance
-jest.mock("../api/axios", () => ({
+jest.mock("../../../api/axios", () => ({
   api: {
     get: jest.fn(),
   },
 }));
 
-// 2. Utility to create a fresh QueryClient for each test
-// This prevents data from one test leaking into the next
+
 const createWrapper = () => {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        retry: false, // Prevents Jest from waiting for multiple retries on failure
-        gcTime: 0, // Clears cache immediately
+        retry: false, 
+        gcTime: 0, 
       },
     },
   });
@@ -38,17 +36,14 @@ describe("Laptops API Hooks", () => {
 
   describe("useLaptops", () => {
     it("successfully fetches the list of laptops", async () => {
-      // Setup the mock response
       api.get.mockResolvedValue({ data: mockLaptops });
 
       const { result } = renderHook(() => useLaptops(), {
         wrapper: createWrapper(),
       });
 
-      // Wait for the query to resolve
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      // Verify the API was called with the correct URL
       expect(api.get).toHaveBeenCalledWith("/products?type=laptop");
       expect(result.current.data).toEqual(mockLaptops);
     });
@@ -75,7 +70,6 @@ describe("Laptops API Hooks", () => {
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      // Assert that we got the Dell, not the MacBook
       expect(result.current.data.name).toBe("Dell XPS");
       expect(result.current.data._id).toBe("L2");
     });
@@ -96,7 +90,6 @@ describe("Laptops API Hooks", () => {
         wrapper: createWrapper(),
       });
 
-      // Status should be 'pending' but fetchStatus should be 'idle'
       expect(result.current.fetchStatus).toBe("idle");
       expect(api.get).not.toHaveBeenCalled();
     });

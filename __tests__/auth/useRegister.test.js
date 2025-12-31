@@ -3,8 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useRegister } from "../../api/auth/useAuth";
 import { api } from "../../api/axios";
 
-// Mock the API
-jest.mock("../api/axios", () => ({
+jest.mock("../../api/axios", () => ({
   api: { post: jest.fn() },
 }));
 
@@ -25,19 +24,16 @@ describe("useRegister Hook", () => {
       password: "password123",
     };
 
-    // Mock a successful response
     api.post.mockResolvedValue({ data: { message: "User created" } });
 
     const { result } = renderHook(() => useRegister(), {
       wrapper: createWrapper(),
     });
 
-    // Trigger the mutation
     result.current.mutate(newUser);
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    // Verify the API call
     expect(api.post).toHaveBeenCalledWith("/auth/register", newUser);
     expect(result.current.data.message).toBe("User created");
   });

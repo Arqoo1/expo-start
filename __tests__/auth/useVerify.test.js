@@ -4,7 +4,7 @@ import { useVerify } from "../../api/auth/useAuth";
 import { api } from "../../api/axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-jest.mock("../api/axios", () => ({ api: { get: jest.fn() } }));
+jest.mock("../../api/axios", () => ({ api: { get: jest.fn() } }));
 jest.mock("@react-native-async-storage/async-storage", () => ({ getItem: jest.fn() }));
 
 const createWrapper = () => {
@@ -18,7 +18,6 @@ describe("useVerify Hook", () => {
 
     const { result } = renderHook(() => useVerify(), { wrapper: createWrapper() });
     
-    // Manually trigger refetch since enabled is false
     result.current.refetch();
 
     await waitFor(() => expect(result.current.isError).toBe(true));

@@ -9,7 +9,7 @@ jest.mock("@react-native-async-storage/async-storage", () =>
   require("@react-native-async-storage/async-storage/jest/async-storage-mock")
 );
 
-jest.mock("../api/profile", () => ({
+jest.mock("../../api/profile", () => ({
   useProfile: jest.fn(),
   useUpdateProfile: jest.fn(),
 }));
@@ -71,12 +71,10 @@ it("shows 'Saving...' and disables button during pending state", () => {
 
     const { getByText } = render(<EditProfile />);
     
-    // 1. Verify the text changed to "Saving..."
     const buttonText = getByText("Saving...");
     expect(buttonText).toBeTruthy();
 
-    // 2. Find the parent button-like component
-    // In React Native, the 'Button' title is a child of the actual button component
+
     const button = buttonText.parent; 
 
     const isDisabled = 

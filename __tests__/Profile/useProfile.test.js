@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useProfile } from "../../api/profile"; // Adjust path
 import { api } from "../../api/axios";
 
-jest.mock("../api/axios", () => ({
+jest.mock("../../api/axios", () => ({
   api: { get: jest.fn() }
 }));
 

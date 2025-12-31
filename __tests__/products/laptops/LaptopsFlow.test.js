@@ -2,8 +2,8 @@ import React from "react";
 import { render, fireEvent, waitFor } from "@testing-library/react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 
-import { useLaptops, useLaptop } from "../../../api/laptops/useLaptops"; 
-jest.mock("../api/laptops/useLaptops", () => ({
+import { useLaptops, useLaptop } from "../../../api/laptops/useLaptops";
+jest.mock("../../../api/laptops/useLaptops", () => ({
   useLaptops: jest.fn(),
   useLaptop: jest.fn(),
 }));
@@ -21,16 +21,14 @@ jest.mock("react-native-safe-area-context", () => ({
   SafeAreaView: ({ children }) => <>{children}</>,
 }));
 
-jest.mock("../constants/Dimensions", () => ({
+jest.mock("../../../constants/Dimensions", () => ({
   width: 400,
   height: 800,
 }));
-
-jest.mock("../components/Card", () => "Card");
-jest.mock("../components/Loading", () => "Loading");
-
-import Laptops from "../../../app/(tabs)/(products)/laptops"; 
-import LaptopDetails from "../../../app/(tabs)/(products)/laptopDetails/[id]"; 
+jest.mock("../../../components/Card", () => "Card");
+jest.mock("../../../components/Loading", () => "Loading");
+import Laptops from "../../../app/(tabs)/(products)/laptops";
+import LaptopDetails from "../../../app/(tabs)/(products)/laptopDetails/[id]";
 
 describe("Laptops Flow", () => {
   const mockPush = jest.fn();

@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useUpdateProfile } from "../../api/profile"; // Adjust path
 import { api } from "../../api/axios";
 
-jest.mock("../api/axios", () => ({
+jest.mock("../../api/axios", () => ({
   api: { put: jest.fn() }
 }));
 
@@ -27,12 +27,10 @@ describe("useUpdateProfile Hook", () => {
 
     const { result } = renderHook(() => useUpdateProfile(), { wrapper: createWrapper() });
 
-    // Trigger the update
     result.current.mutate(updatedData);
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    // Verify the PUT call structure matches your hook's request logic
     expect(api.put).toHaveBeenCalledWith("/profile", {
       name: "Jane",
       surname: "Doe",

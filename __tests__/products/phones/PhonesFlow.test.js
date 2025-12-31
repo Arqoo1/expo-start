@@ -4,7 +4,7 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 
 import { usePhones, usePhone } from "../../../api/phones/usePhones";
 
-jest.mock("../api/phones/usePhones", () => ({
+jest.mock("../../../api/phones/usePhones", () => ({
   usePhones: jest.fn(),
   usePhone: jest.fn(),
 }));
@@ -22,13 +22,12 @@ jest.mock("react-native-safe-area-context", () => ({
   SafeAreaView: ({ children }) => <>{children}</>,
 }));
 
-jest.mock("../constants/Dimensions", () => ({
-  width: 375,
-  height: 812,
+jest.mock("../../../constants/Dimensions", () => ({
+  width: 400,
+  height: 800,
 }));
-
-jest.mock("../components/Card", () => "Card");
-jest.mock("../components/Loading", () => "Loading");
+jest.mock("../../../components/Card", () => "Card");
+jest.mock("../../../components/Loading", () => "Loading");
 
 import Phones from "../../../app/(tabs)/(products)/phones";
 import PhoneDetails from "../../../app/(tabs)/(products)/phoneDetails/[id]";
