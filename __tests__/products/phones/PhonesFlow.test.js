@@ -2,7 +2,7 @@ import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 
-import { usePhones, usePhone } from "../api/phones/usePhones";
+import { usePhones, usePhone } from "../../../api/phones/usePhones";
 
 jest.mock("../api/phones/usePhones", () => ({
   usePhones: jest.fn(),
@@ -30,8 +30,8 @@ jest.mock("../constants/Dimensions", () => ({
 jest.mock("../components/Card", () => "Card");
 jest.mock("../components/Loading", () => "Loading");
 
-import Phones from "../app/(tabs)/(products)/phones";
-import PhoneDetails from "../app/(tabs)/(products)/phoneDetails/[id]";
+import Phones from "../../../app/(tabs)/(products)/phones";
+import PhoneDetails from "../../../app/(tabs)/(products)/phoneDetails/[id]";
 
 describe("Phones Flow", () => {
   const mockRouter = { back: jest.fn() };

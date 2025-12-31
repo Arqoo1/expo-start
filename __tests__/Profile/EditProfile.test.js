@@ -2,8 +2,8 @@ import React from "react";
 import { render, fireEvent, waitFor, act } from "@testing-library/react-native";
 import { useRouter } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { useProfile, useUpdateProfile } from "../api/profile";
-import EditProfile from "../app/(tabs)/(profile)/edit";
+import { useProfile, useUpdateProfile } from "../../api/profile";
+import EditProfile from "../../app/(tabs)/(profile)/edit";
 
 jest.mock("@react-native-async-storage/async-storage", () =>
   require("@react-native-async-storage/async-storage/jest/async-storage-mock")
