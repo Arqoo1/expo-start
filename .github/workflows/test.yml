@@ -21,7 +21,7 @@ jobs:
           cache: "npm"
 
       - name: 📦 Install Dependencies
-        run: npm install
+        run: npm install --force
 
       - name: 🧪 Run Jest Tests
         run: npm test
