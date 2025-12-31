@@ -8,7 +8,22 @@ import BaseInterceptor from "../interceptors/base.interceptor";
 
 const queryClient = new QueryClient();
 
-let hasBootstrapped = false;
+// Module-level variable to prevent loops across remounts
+let authCheckStarted = false;
+
+// Exported ONLY for testing purposes
+export const resetAuthFlag = () => {
+  authCheckStarted = false;
+};
+
+export default function RootLayout() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Bootstrap />
+      <BaseInterceptor />
+    </QueryClientProvider>
+  );
+}
 
 function Bootstrap() {
   const router = useRouter();
@@ -16,31 +31,31 @@ function Bootstrap() {
   const { refetch } = useVerify();
 
   useEffect(() => {
-    if (hasBootstrapped) {
+    if (authCheckStarted) {
       setReady(true);
       return;
     }
 
-    hasBootstrapped = true;
+    authCheckStarted = true;
 
     const run = async () => {
       try {
         const token = await AsyncStorage.getItem("token");
 
         if (!token) {
+          setReady(true);
           return;
         }
 
         const res = await refetch();
 
-        if (!res.data?.user) {
-          throw new Error("Invalid token");
+        if (res.data?.user) {
+          await AsyncStorage.setItem("user", JSON.stringify(res.data.user));
+          router.replace("/(tabs)");
+        } else {
+          await AsyncStorage.removeItem("token");
         }
-
-        await AsyncStorage.setItem("user", JSON.stringify(res.data.user));
-
-        router.replace("/(tabs)");
-      } catch {
+      } catch (error) {
         await AsyncStorage.removeItem("token");
       } finally {
         setReady(true);
@@ -48,12 +63,12 @@ function Bootstrap() {
     };
 
     run();
-  }, []);
+  }, [refetch, router]);
 
   if (!ready) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" />
+        <ActivityIndicator testID="activity-indicator" size="large" />
       </View>
     );
   }
@@ -64,14 +79,5 @@ function Bootstrap() {
       <Stack.Screen name="register" />
       <Stack.Screen name="(tabs)" />
     </Stack>
-  );
-}
-
-export default function RootLayout() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <Bootstrap />
-      <BaseInterceptor />
-    </QueryClientProvider>
   );
 }

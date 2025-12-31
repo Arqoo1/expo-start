@@ -1,0 +1,90 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Card Component matches snapshot 1`] = `
+<View
+  style={
+    {
+      "backgroundColor": "#ffffff",
+      "borderColor": "#ccc",
+      "borderRadius": 12,
+      "borderWidth": 1,
+      "marginVertical": 10,
+      "overflow": "hidden",
+    }
+  }
+>
+  <Image
+    source={
+      {
+        "uri": "https://via.placeholder.com/150",
+      }
+    }
+    style={
+      {
+        "height": 180,
+        "width": "100%",
+      }
+    }
+  />
+  <View
+    style={
+      {
+        "gap": 6,
+        "padding": 12,
+      }
+    }
+  >
+    <Text
+      style={
+        {
+          "color": "#222",
+          "fontSize": 18,
+          "fontWeight": "600",
+        }
+      }
+    >
+      Test Product
+    </Text>
+    <Text
+      style={
+        {
+          "color": "#2E186A",
+          "fontSize": 16,
+          "fontWeight": "700",
+        }
+      }
+    >
+      $
+      99.99
+    </Text>
+    <Text
+      style={
+        {
+          "color": "#333",
+          "fontSize": 14,
+        }
+      }
+    >
+      This is a test product.
+    </Text>
+    <Text
+      href="/product/1"
+      onPress={[Function]}
+      role="link"
+      style={
+        {
+          "backgroundColor": "#2E186A",
+          "borderRadius": 8,
+          "color": "#fff",
+          "fontWeight": "600",
+          "marginTop": 8,
+          "paddingVertical": 8,
+          "textAlign": "center",
+        }
+      }
+    >
+      View Details
+    </Text>
+  </View>
+</View>
+`;

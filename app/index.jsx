@@ -1,4 +1,12 @@
-import { View, TextInput, Button, Text, StyleSheet, Alert } from "react-native";
+import {
+  View,
+  TextInput,
+  Button,
+  Text,
+  StyleSheet,
+  Alert,
+  TouchableOpacity,
+} from "react-native";
 import { Formik } from "formik";
 import { useRouter } from "expo-router";
 import { LoginSchema } from "../utils/validations";
@@ -10,26 +18,27 @@ export default function Login() {
   const router = useRouter();
   const { mutate: login, isPending } = useLogin();
 
-const handleLogin = (values) => {
-  login(values, {
-    onSuccess: async (data) => {
-      if (!data?.token || !data?.user) {
-        Alert.alert("Error", "Login response invalid");
-        return;
-      }
+  const handleLogin = (values) => {
+    login(values, {
+      onSuccess: async (data) => {
+        if (!data?.token || !data?.user) {
+          Alert.alert("Error", "Login response invalid");
+          return;
+        }
 
-      await AsyncStorage.setItem("token", data.token);
-      await AsyncStorage.setItem("user", JSON.stringify(data.user));
+        await AsyncStorage.setItem("token", data.token);
+        await AsyncStorage.setItem("user", JSON.stringify(data.user));
 
-      Alert.alert("Success", "Logged in successfully!");
-      router.replace("/(tabs)/(profile)/details");
-    },
-    onError: (err) => {
-      const message = err?.response?.data?.error || err?.message || "Login failed";
-      Alert.alert("Error", message);
-    },
-  });
-};
+        Alert.alert("Success", "Logged in successfully!");
+        router.replace("/(tabs)/(profile)/details");
+      },
+      onError: (err) => {
+        const message =
+          err?.response?.data?.error || err?.message || "Login failed";
+        Alert.alert("Error", message);
+      },
+    });
+  };
   return (
     <ScreenWrapper>
       <View style={styles.container}>
@@ -73,12 +82,22 @@ const handleLogin = (values) => {
                 <Text style={styles.error}>{errors.password}</Text>
               )}
 
-              <Button
-                title={isPending ? "Logging in..." : "Login"}
-                color="#2E186A"
+              <TouchableOpacity
+                testID="login-button"
+                style={{
+                  backgroundColor: "#2E186A",
+                  paddingVertical: 8,
+                  borderRadius: 8,
+                  marginTop: 10,
+                  alignItems: "center",
+                }}
                 onPress={handleSubmit}
                 disabled={isPending}
-              />
+              >
+                <Text style={{ color: "#fff", fontWeight: "600" }}>
+                  {isPending ? "Logging in..." : "Login"}
+                </Text>
+              </TouchableOpacity>
 
               <Text
                 style={styles.link}

@@ -117,6 +117,7 @@ export default function Register() {
               )}
 
               <Button
+                testID="register-button"
                 title={isPending ? "Registering..." : "Register"}
                 color="#2E186A"
                 onPress={handleSubmit}
